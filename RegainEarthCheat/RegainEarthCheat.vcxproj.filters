@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Extern">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Extern\Utils">
+      <UniqueIdentifier>{40ff3341-dc3a-46df-8dd7-4e5f360f09e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern\Minhook">
+      <UniqueIdentifier>{cb79c645-53fe-4c30-acb6-468dd52fb8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern\sdk-cpp">
+      <UniqueIdentifier>{619984a3-2f9b-4a0c-a79b-55f373d80c9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extern\pre-comp">
+      <UniqueIdentifier>{79554bfc-c5e6-4073-ab77-21ea318d3b4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Globals">
+      <UniqueIdentifier>{07a3081f-cebc-4c3a-ba7c-8896e675ea62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{72d8380f-0b7b-4f54-9d56-85ddff818b53}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dll-main.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BasicHelper.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\Engine_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\CoreUObject_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\W_HUD_Shooting_RE_HR_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BP_GameInstance_RE_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BP_Wave_REHR_PlayerController_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Extern\pre-comp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BP_Wave_GameState_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BP_Wave_Gamemode_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\BP_PlayerCharacter_BPBase_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="SDK\AI_Character_Base_Enemy_Pawn_functions.cpp">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Extern</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Pattern.h">
+      <Filter>Extern\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Utils.h">
+      <Filter>Extern\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Offsets.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="Minhook\MinHook.h">
+      <Filter>Extern\Minhook</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK.h">
+      <Filter>Extern</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Extern\pre-comp</Filter>
+    </ClInclude>
+    <ClInclude Include="esp.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="aimbot.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SDK\BasicHelper.h">
+      <Filter>Extern\sdk-cpp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Minhook\libMinHook.x64.lib">
+      <Filter>Extern\Minhook</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
