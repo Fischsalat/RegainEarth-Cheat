@@ -4,7 +4,7 @@
 
 #define PI 3.14159265359
 
-class ab
+namespace ab
 {
 	inline float RadToDeg(float radius)
 	{
@@ -23,26 +23,37 @@ class ab
 		// distance = √ (x1 - x2)² + (y1 - y2)² + (z1 - z2)²
 	}
 
-public:
 	bool CheckLineOfSight(CG::APawn* enemyPawn)
 	{
-		myController->LineOfSightTo(enemyPawn, GetCamera()->GetCameraLocation(), false);
+		return myController->LineOfSightTo(enemyPawn, GetCamera()->GetCameraLocation(), false);
 	}
 
-	void SetViewRotation(CG::FVector targetViepoint)
+	inline CG::AAI_Character_Base_Enemy_Pawn_C* CheckForClosestEnemy(CG::AAI_Character_Base_Enemy_Pawn_C* pawnToCheck)
+	{
+		static CG::AAI_Character_Base_Enemy_Pawn_C* closestEnemy = nullptr;
+		static double closestDistance = 99999.9f;
+
+		if (pawnToCheck)
+		{
+			if (CheckLineOfSight(pawnToCheck))
+			{
+				double actorDistance = GetDistance(pawnToCheck);
+
+				if (actorDistance < closestDistance)
+				{
+					closestDistance = actorDistance;
+					closestEnemy = pawnToCheck;
+				}
+			}
+		}
+		return closestEnemy;
+	}
+
+	void AimAt(const CG::FVector& targetViepoint)
 	{
 		myController->ControlRotation;
-		CG::FRotator;
-		CG::FMatrix;
+
+		//myController->Client_SetControlRotation();
 	}
 	
 }
-
-/*
-	fVec3 diff = enemy->skeleton->meshInstance->model->pMesh[6].pos - player->skeleton->meshInstance->model->pMesh[6].pos;
-	float m = diff.GetMagnitude();
-	float q = atan2(diff.y , diff.x)  * 180 / PI;
-	float z = asinf(diff.z / m) * 180 / PI;
-	camera->angle.x = (int)(z / 360 * 65535);//pich
-	camera->angle.y = (int)(q / 360 * 65535);//yaw
-*/

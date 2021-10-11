@@ -1,13 +1,14 @@
 #pragma once
 #include "pch.h"
 #include "Global.h"
+#include "aimbot.h"
 
 namespace ESP
 {
 	uint64 postRenderAddress = reinterpret_cast<uintptr_t>(GetModuleHandle(0)) + Offsets::PostRender;
 	auto PostRender = reinterpret_cast<void(*)(CG::UGameViewportClient*, CG::UCanvas*)>(postRenderAddress);
 
-	void CanvasDrawnText(CG::UCanvas* canvas, const CG::FString& renderString, const CG::FVector2D& screenPosition, const CG::FLinearColor& color, CG::FVector2D scale = { 1.0f, 1.0f })
+	void CanvasDrawnText(CG::UCanvas*& canvas, const CG::FString& renderString, const CG::FVector2D& screenPosition, const CG::FLinearColor& color, CG::FVector2D scale = { 1.0f, 1.0f })
 	{
 		return canvas->K2_DrawText(GEngine->SubtitleFont, renderString, screenPosition, scale, color, false, { 0.0f, 0.0f, 0.0f, 0.0f, }, scale, true, true, true, { 0.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -33,9 +34,6 @@ namespace ESP
 
 	void PostRenderHook(CG::UGameViewportClient* thisPtr, CG::UCanvas* canvas)
 	{
-
-		//canvas->K2_DrawBox({ 50.0f, 50.0f }, { 720.0f, 720.0f }, 25.0f, { 50.0f, 20.0f, 3.0f, 80.0f });
-		
 		GetWeapon()->Ammo_InClip = GetWeapon()->Ammo_ClipSize;
 		GetWeapon()->RecoilIncreaseSpeed = 99999999.9f;
 		GetWeapon()->bUnlimited_Ammo_Weapon = true;
@@ -88,6 +86,9 @@ namespace ESP
 
 				if (enemy && !enemy->IsDead && enemy->CurrentHealth > 0)
 				{
+					ab::CheckForClosestEnemy(enemy);
+
+
 					/*
 					for (int j = 0; j < enemy->Mesh->GetNumBones(); j++)
 					{
@@ -106,6 +107,8 @@ namespace ESP
 
 					if (enemy->IsA(CG::AAI_Robot_Enemy_Pawn_C::StaticClass()))
 					{
+						// Head: 18
+
 						DrawLineBetweenBones(canvas, enemy, 18, 17);
 
 						DrawLineBetweenBones(canvas, enemy, 17, 40);
@@ -137,10 +140,39 @@ namespace ESP
 					}
 					else if (enemy->IsA(CG::ABP_TwigPeople_AI_Enemy_C::StaticClass()))
 					{
-						
+						//Head: 48
+
+						DrawLineBetweenBones(canvas, enemy, 48, 47);
+
+						DrawLineBetweenBones(canvas, enemy, 47, 25);
+						DrawLineBetweenBones(canvas, enemy, 25, 24);
+						DrawLineBetweenBones(canvas, enemy, 24, 23);
+
+						DrawLineBetweenBones(canvas, enemy, 47, 27);
+						DrawLineBetweenBones(canvas, enemy, 27, 28);
+						DrawLineBetweenBones(canvas, enemy, 28, 29);
+
+						DrawLineBetweenBones(canvas, enemy, 47, 4);
+						DrawLineBetweenBones(canvas, enemy, 4, 3);
+						DrawLineBetweenBones(canvas, enemy, 3, 2);
+						DrawLineBetweenBones(canvas, enemy, 2, 1);
+
+						DrawLineBetweenBones(canvas, enemy, 1, 55);
+						DrawLineBetweenBones(canvas, enemy, 55, 56);
+						DrawLineBetweenBones(canvas, enemy, 56, 57);
+						DrawLineBetweenBones(canvas, enemy, 57, 58);
+						DrawLineBetweenBones(canvas, enemy, 58, 59);
+
+						DrawLineBetweenBones(canvas, enemy, 1, 49);
+						DrawLineBetweenBones(canvas, enemy, 49, 50);
+						DrawLineBetweenBones(canvas, enemy, 50, 51);
+						DrawLineBetweenBones(canvas, enemy, 51, 52);
+						DrawLineBetweenBones(canvas, enemy, 52, 53);
 					}
 					else if (enemy->IsA(CG::AAI_PBR_Creature_Enemy_C::StaticClass()))
 					{
+						//Head: 6
+
 						DrawLineBetweenBones(canvas, enemy, 8, 6);
 
 						DrawLineBetweenBones(canvas, enemy, 6, 35);
@@ -166,6 +198,8 @@ namespace ESP
 					}
 					else
 					{
+						//Head: 29
+
 						DrawLineBetweenBones(canvas, enemy, 29, 28);
 						DrawLineBetweenBones(canvas, enemy, 28, 31);
 
@@ -195,20 +229,52 @@ namespace ESP
 			}
 		}
 
+		CG::AAI_Character_Base_Enemy_Pawn_C* target = ab::CheckForClosestEnemy(nullptr);
+
+		if (target)
+		{
+			CG::FVector distanceVector;
+
+			if (target->IsA(CG::AAI_Robot_Enemy_Pawn_C::StaticClass()))
+			{
+				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(18).WPlane;
+			}
+			else if (target->IsA(CG::ABP_TwigPeople_AI_Enemy_C::StaticClass()))
+			{
+				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(48).WPlane;
+			}
+			else if (target->IsA(CG::AAI_PBR_Creature_Enemy_C::StaticClass()))
+			{
+				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(6).WPlane;
+			}
+			else if (target->IsA(CG::ABP_AI_MechaBiped_Enemy_C::StaticClass()))
+			{
+
+			}
+			else
+			{
+				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(29).WPlane;
+			}
+
+			double distance = ab::GetDistance(target);
+
+			float pitch = ab::RadToDeg(asin(distanceVector.Z / distance));
+			myController->ControlRotation.Pitch = 5;
+		}
+
+
 		return PostRender(thisPtr, canvas);
 	}
 
 	inline void InitPRHook()
 	{
 		DWORD virtualProtect;
-		DWORD nullProtection;
-
 		void** vftable = *static_cast<void***>(static_cast<void*>(GEngine->GameViewport));
 
 		VirtualProtect((&vftable[0x62]), 0x8, PAGE_EXECUTE_READWRITE, &virtualProtect);
 
 		vftable[0x62] = PostRenderHook;
 
-		VirtualProtect((&vftable[0x62]), 0x8, virtualProtect, &nullProtection);
+		VirtualProtect((&vftable[0x62]), 0x8, virtualProtect, &virtualProtect);
 	}
 };
