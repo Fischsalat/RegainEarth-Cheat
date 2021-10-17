@@ -166,7 +166,6 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="esp.h" />
-    <ClInclude Include="Minhook\MinHook.h" />
     <ClInclude Include="Offsets.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="aimbot.h" />
@@ -175,9 +174,6 @@
     <ClInclude Include="SDK\Engine_classes.h" />
     <ClInclude Include="Utils\Pattern.h" />
     <ClInclude Include="Utils\Utils.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Minhook\libMinHook.x64.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

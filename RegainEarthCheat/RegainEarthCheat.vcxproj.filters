@@ -12,9 +12,6 @@
     <Filter Include="Extern\Utils">
       <UniqueIdentifier>{40ff3341-dc3a-46df-8dd7-4e5f360f09e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Extern\Minhook">
-      <UniqueIdentifier>{cb79c645-53fe-4c30-acb6-468dd52fb8f7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Extern\sdk-cpp">
       <UniqueIdentifier>{619984a3-2f9b-4a0c-a79b-55f373d80c9f}</UniqueIdentifier>
     </Filter>
@@ -82,9 +79,6 @@
     <ClInclude Include="Global.h">
       <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Minhook\MinHook.h">
-      <Filter>Extern\Minhook</Filter>
-    </ClInclude>
     <ClInclude Include="SDK.h">
       <Filter>Extern</Filter>
     </ClInclude>
@@ -103,10 +97,5 @@
     <ClInclude Include="SDK\Engine_classes.h">
       <Filter>Extern\sdk-cpp</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Minhook\libMinHook.x64.lib">
-      <Filter>Extern\Minhook</Filter>
-    </Library>
   </ItemGroup>
 </Project>
