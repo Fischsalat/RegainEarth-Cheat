@@ -7,12 +7,13 @@
 
 #include <set>
 #include <string>
-#include "SDK/BasicHelper.h"
 
 #define PI float(3.14159265359f)
 
 #define RAD(degs) float(degs) * PI / 180.0f
 #define DEG(rads) float(rads) * 180.0f / PI
+
+#include "SDK/BasicHelper.h"
 
 #include "SDK/CoreUObject_structs.h"
 #include "SDK/CoreUObject_classes.h"

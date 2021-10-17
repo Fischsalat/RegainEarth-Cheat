@@ -65,8 +65,6 @@ public:
 		}
 	}
 
-
-
 private:
 
 	static std::string CreateMask(std::string pattern)

@@ -92,7 +92,7 @@ struct FRotator FVector::ToRotator() const
 {
 	// Pitch, Yaw, Roll
 
-	return { (DEG(asinf(Z / Magnitude()) - 0.0f)), DEG(atan2f(Y, X)), 0.0f };
+	return { DEG(asinf(Z / Magnitude())), DEG(atan2f(Y, X)), 0.0f };
 }
 
 

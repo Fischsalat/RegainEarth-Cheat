@@ -401,7 +401,7 @@ struct FVector
 
 	inline FVector& operator*= (const float other) { X *= other; Y *= other; Z *= other; return *this; }
 
-	inline void Print() { std::cout << X << " " << Y << " " << Z << "\n"; }
+	inline void Print(const char* whatsPrinted) { std::cout << whatsPrinted << ": " << X << " " << Y << " " << Z << "\n"; }
 
 	inline float Dot(const FVector& b) const { return (X * b.X) + (Y * b.Y) + (Z * b.Z); }
 
