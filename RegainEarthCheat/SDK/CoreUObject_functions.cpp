@@ -1,6 +1,7 @@
 ﻿// Name: RegainEart-FirtstStrike, Version: Version-1
 
 #include "../pch.h"
+#include "pch.h"
 
 /*!!DEFINE!!*/
 
@@ -85,6 +86,13 @@ void UObject::ExecuteUbergraph(int EntryPoint)
 	UObject::ProcessEvent(fn, &params);
 	fn->FunctionFlags = flags;
 
+}
+
+struct FRotator FVector::ToRotator() const
+{
+	// Pitch, Yaw, Roll
+
+	return { (DEG(asinf(Z / Magnitude()) - 0.0f)), DEG(atan2f(Y, X)), 0.0f };
 }
 
 

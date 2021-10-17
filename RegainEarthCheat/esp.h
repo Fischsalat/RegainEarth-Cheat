@@ -8,7 +8,7 @@ namespace ESP
 	uint64 postRenderAddress = reinterpret_cast<uintptr_t>(GetModuleHandle(0)) + Offsets::PostRender;
 	auto PostRender = reinterpret_cast<void(*)(CG::UGameViewportClient*, CG::UCanvas*)>(postRenderAddress);
 
-	void CanvasDrawnText(CG::UCanvas*& canvas, const CG::FString& renderString, const CG::FVector2D& screenPosition, const CG::FLinearColor& color, CG::FVector2D scale = { 1.0f, 1.0f })
+	void CanvasDrawText(CG::UCanvas*& canvas, const CG::FString& renderString, const CG::FVector2D& screenPosition, const CG::FLinearColor& color, CG::FVector2D scale = { 1.0f, 1.0f })
 	{
 		return canvas->K2_DrawText(GEngine->SubtitleFont, renderString, screenPosition, scale, color, false, { 0.0f, 0.0f, 0.0f, 0.0f, }, scale, true, true, true, { 0.0f, 0.0f, 0.0f, 1.0f });
 	}
@@ -32,13 +32,26 @@ namespace ESP
 		canvas->K2_DrawLine(vec1PostProject, vec2PostProject, 1.0f, { 255.0f, 0.0f, 0.0f, 1.0f });
 	}
 
+	void DrawBox(CG::UCanvas* canvas, CG::ACharacter* character)
+	{
+		CG::FVector2D vec1PostProject, vec2PostProject;
+		CG::FBoxSphereBounds bounds = character->Mesh->CachedWorldSpaceBounds;
+
+		myController->ProjectWorldLocationToScreen(bounds.Origin, &vec1PostProject, true);
+		myController->ProjectWorldLocationToScreen(bounds.BoxExtent, &vec2PostProject, true);
+
+		canvas->K2_DrawBox(vec1PostProject, vec2PostProject, 1.0f, { 255.0f, 0.0f, 0.0f, 1.0f });
+	}
+
 	void PostRenderHook(CG::UGameViewportClient* thisPtr, CG::UCanvas* canvas)
 	{
 		GetWeapon()->Ammo_InClip = GetWeapon()->Ammo_ClipSize;
 		GetWeapon()->RecoilIncreaseSpeed = 99999999.9f;
 		GetWeapon()->bUnlimited_Ammo_Weapon = true;
+		GetWeapon()->CanBurstFire = true;
 		GetWeapon()->Damage = 9999999.9f;
 		GetWeapon()->Spreading_Increase = 0.0f;
+		GetWeapon()->ShotsPerSecond = 15.0f;
 
 		GetPawn()->CurrentHealth = 9999999.9f;
 		GetPawn()->MaxHealth = 9999999.9f;
@@ -49,7 +62,11 @@ namespace ESP
 
 		GetPawn()->CharacterMovement->JumpOffJumpZFactor = 80.0f;
 		GetPawn()->CharacterMovement->JumpZVelocity = 1200.0f;
-		
+
+		GetPawn()->CharacterMovement->AirControl = 200000.0f;
+		GetPawn()->CharacterMovement->AirControlBoostMultiplier = 20000.0f;
+		GetPawn()->CharacterMovement->AirControlBoostVelocityThreshold = 200000.0f;
+
 		GetWeapon()->Spreading_Decrease_Time = 0.0f;
 		GetWeapon()->Degrees_of_spreading = 0.0f;
 		GetWeapon()->WeaponCanShowLaserDotPointer = true;
@@ -57,11 +74,11 @@ namespace ESP
 		GetPawn()->BP_RadialScanComponent->HoldEffectTimeInSecondsAfterLastRadarWave = 300.0f;
 
 
-		for (int i = 0; i < GetPawn()->Mesh->GetNumBones(); i++)
+		for (int i = 0; i < GetPawn()->Mesh->GetNumBones(); +i++)
 		{
 
 			CG::FMatrix matrix = GetPawn()->Mesh->GetBoneMatrix(i);
-			
+
 			std::wstring wString = std::to_wstring(i);
 
 			CG::FString printText(wString.c_str());
@@ -69,7 +86,7 @@ namespace ESP
 			CG::FVector2D vecOnScreen;
 			myController->ProjectWorldLocationToScreen(matrix.WPlane, &vecOnScreen, true);
 
-			CanvasDrawnText(canvas, printText, vecOnScreen, { 1.0f, 0.43f, 0.0f, 1.0f });
+			CanvasDrawText(canvas, printText, vecOnScreen, { 1.0f, 0.43f, 0.0f, 1.0f });
 		}
 
 		for (int i = 0; i < GetLevel()->Actors.Num(); i++)
@@ -83,27 +100,25 @@ namespace ESP
 			{
 				CG::AAI_Character_Base_Enemy_Pawn_C* enemy = reinterpret_cast<CG::AAI_Character_Base_Enemy_Pawn_C*>(GetLevel()->Actors[i]);
 
+				/*
+				for (int j = 0; j < enemy->Mesh->GetNumBones(); j++)
+				{
+					CG::FMatrix matrix = enemy->Mesh->GetBoneMatrix(j);
 
+					std::wstring wString = std::to_wstring(j);
+
+					CG::FString printText(wString.c_str());
+
+					CG::FVector2D vecOnScreen;
+					myController->ProjectWorldLocationToScreen(matrix.WPlane, &vecOnScreen, true);
+
+					CanvasDrawnText(canvas, printText, vecOnScreen, { 1.0f, 0.43f, 0.0f, 1.0f });
+				}
+				*/
 				if (enemy && !enemy->IsDead && enemy->CurrentHealth > 0)
 				{
-					ab::CheckForClosestEnemy(enemy);
-
-
-					/*
-					for (int j = 0; j < enemy->Mesh->GetNumBones(); j++)
-					{
-						CG::FMatrix matrix = enemy->Mesh->GetBoneMatrix(j);
-
-						std::wstring wString = std::to_wstring(j);
-						
-						CG::FString printText(wString.c_str());
-
-						CG::FVector2D vecOnScreen;
-						myController->ProjectWorldLocationToScreen(matrix.WPlane, &vecOnScreen, true);
-
-						CanvasDrawnText(canvas, printText, vecOnScreen, { 1.0f, 0.43f, 0.0f, 1.0f });
-					}
-					*/
+					Aim::AimAtClosestEnemy(enemy);
+					//DrawBox(canvas, enemy);
 
 					if (enemy->IsA(CG::AAI_Robot_Enemy_Pawn_C::StaticClass()))
 					{
@@ -228,40 +243,7 @@ namespace ESP
 				}
 			}
 		}
-
-		CG::AAI_Character_Base_Enemy_Pawn_C* target = ab::CheckForClosestEnemy(nullptr);
-
-		if (target)
-		{
-			CG::FVector distanceVector;
-
-			if (target->IsA(CG::AAI_Robot_Enemy_Pawn_C::StaticClass()))
-			{
-				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(18).WPlane;
-			}
-			else if (target->IsA(CG::ABP_TwigPeople_AI_Enemy_C::StaticClass()))
-			{
-				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(48).WPlane;
-			}
-			else if (target->IsA(CG::AAI_PBR_Creature_Enemy_C::StaticClass()))
-			{
-				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(6).WPlane;
-			}
-			else if (target->IsA(CG::ABP_AI_MechaBiped_Enemy_C::StaticClass()))
-			{
-
-			}
-			else
-			{
-				distanceVector = GetCamera()->K2_GetActorLocation() - target->Mesh->GetBoneMatrix(29).WPlane;
-			}
-
-			double distance = ab::GetDistance(target);
-
-			float pitch = ab::RadToDeg(asin(distanceVector.Z / distance));
-			myController->ControlRotation.Pitch = 5;
-		}
-
+	
 
 		return PostRender(thisPtr, canvas);
 	}

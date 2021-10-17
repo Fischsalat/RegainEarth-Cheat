@@ -950,7 +950,7 @@ struct FMulticastSparseDelegate
 
 struct FStructBaseChain
 {
-	class FStructBaseChain** StructBaseChainArray;
+	struct FStructBaseChain** StructBaseChainArray;
 	int32_t NumStructBasesInChainMinusOne;
 	unsigned char pad_GVTT6TVOXX[0x04];
 };

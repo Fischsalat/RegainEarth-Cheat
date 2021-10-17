@@ -172,6 +172,7 @@
     <ClInclude Include="aimbot.h" />
     <ClInclude Include="SDK.h" />
     <ClInclude Include="SDK\BasicHelper.h" />
+    <ClInclude Include="SDK\Engine_classes.h" />
     <ClInclude Include="Utils\Pattern.h" />
     <ClInclude Include="Utils\Utils.h" />
   </ItemGroup>

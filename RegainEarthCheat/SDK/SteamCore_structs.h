@@ -794,7 +794,6 @@ enum class SteamCore_ESteamCoreInputActionOrigin : uint8_t
 	ESteamCoreInputActionOrigin__Switch_Reserved16 = 253,
 	ESteamCoreInputActionOrigin__Switch_Reserved17 = 254,
 	ESteamCoreInputActionOrigin__Switch_Reserved18 = 255,
-	ESteamCoreInputActionOrigin__ESteamCoreInputActionOrigin_MAX = 256,
 
 };
 

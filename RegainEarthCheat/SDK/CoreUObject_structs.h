@@ -401,6 +401,8 @@ struct FVector
 
 	inline FVector& operator*= (const float other) { X *= other; Y *= other; Z *= other; return *this; }
 
+	inline void Print() { std::cout << X << " " << Y << " " << Z << "\n"; }
+
 	inline float Dot(const FVector& b) const { return (X * b.X) + (Y * b.Y) + (Z * b.Z); }
 
 	inline float MagnitudeSqr() const { return Dot(*this); }
@@ -412,6 +414,28 @@ struct FVector
 		const float fMagnitude = Magnitude();
 		return FVector(X / fMagnitude, Y / fMagnitude, Z / fMagnitude);
 	}
+
+	inline void Normalize()
+	{
+		float mag = Magnitude();
+
+		if (mag > 0)
+		{
+			X = X / mag;
+			Y = Y / mag;
+			Z = Z / mag;
+		}
+	}
+
+	inline FVector GetNormalized() const
+	{
+		if (Magnitude() > 0)
+			return { X / Magnitude(), Y / Magnitude(), Z / Magnitude() };
+		
+		return { 0.0f, 0.0f,0.0f };
+	}
+
+	struct FRotator ToRotator() const;
 
 	friend bool operator==(const FVector& first, const FVector& second) { return first.X == second.X && first.Y == second.Y && first.Z == second.Z; }
 
@@ -537,6 +561,8 @@ struct FRotator
 	inline FRotator& operator-= (const FRotator& other) { Pitch -= other.Pitch; Yaw -= other.Yaw; Roll -= other.Roll; return *this; }
 
 	inline FRotator& operator*= (const float other) { Pitch *= other; Yaw *= other; Roll *= other; return *this; }
+
+	inline void Print() const { std::cout << Pitch << " " << Yaw << " " << Roll << "\n"; };
 
 };
 
