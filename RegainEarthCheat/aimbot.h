@@ -14,18 +14,26 @@ namespace Aim
 		// distance = √ (x1 - x2)² + (y1 - y2)² + (z1 - z2)²
 	}
 
-	bool IsInLineOfSight(CG::APawn* enemyPawn)
-	{
-		if (enemyPawn)
-		{
-			return myController->LineOfSightTo(enemyPawn, GetCamera()->GetCameraLocation(), false);
-		}
-		return false;
-	}
-
 	void AimAt(const CG::FVector& targetViepoint)
 	{
 		myController->ControlRotation = (targetViepoint - GetCamera()->GetCameraLocation()).ToRotator();
+	}
+
+	inline bool IsInFOV(CG::ACharacter* enemy)
+	{
+		CG::FVector2D vecPostProject;
+		W2S(enemy->K2_GetActorLocation(), &vecPostProject, true);
+
+		if (enemy && myController->LineOfSightTo(enemy, GetCamera()->GetCameraLocation(), false))
+		{
+			/*
+			if (powf(vecPostProject.X - 960, 2) + powf(vecPostProject.Y - 540, 2) <= powf(AIMBOT_FOV, 2))
+			{
+				return true;
+			}*/
+			return true;
+		}
+		return false;
 	}
 
 	inline void AimAtClosestEnemy(CG::AAI_Character_Base_Enemy_Pawn_C* pawnToCheck)
@@ -33,7 +41,7 @@ namespace Aim
 		static CG::AAI_Character_Base_Enemy_Pawn_C* closestEnemy = nullptr;
 		static float closestDistance = 999999.9f;
 
-		if (closestEnemy && !closestEnemy->IsDead && IsInLineOfSight(closestEnemy) && GetPawn()->ActualAimingState == CG::RegainEarth_FS_EStateOfAiming::EStateOfAiming__AimZoomed)
+		if (closestEnemy && !closestEnemy->IsDead && IsInFOV(closestEnemy) && GetPawn()->ActualAimingState == CG::RegainEarth_FS_EStateOfAiming::EStateOfAiming__AimZoomed)
 		{
 			if (closestEnemy->IsA(CG::AAI_Robot_Enemy_Pawn_C::StaticClass()))
 			{
@@ -56,7 +64,7 @@ namespace Aim
 				AimAt(closestEnemy->Mesh->GetBoneMatrix(29).WPlane);
 			}
 		}
-		else if(pawnToCheck && !pawnToCheck->IsDead && IsInLineOfSight(pawnToCheck))
+		else if(pawnToCheck && !pawnToCheck->IsDead && IsInFOV(pawnToCheck))
 		{
 			closestEnemy = pawnToCheck;
 		}

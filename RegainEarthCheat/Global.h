@@ -13,6 +13,10 @@ typedef unsigned __int32 uint32;
 typedef unsigned __int64 uint64;
 
 
+#define W2S(WorldLocation, ScreenLocation, bPlayerViewPortRelative) if(!myController->ProjectWorldLocationToScreen(WorldLocation, ScreenLocation, bPlayerViewPortRelative)) std::cout << "WorldToScreen failed at line " << __LINE__ << "\n"
+
+#define AIMBOT_FOV 500.0f//In pixels
+
 uintptr_t Imagebase;
 
 CG::UEngine* GEngine;
@@ -99,7 +103,7 @@ void InitGlobals()
 		if (!myKismet)	Utils::ThrowErrorExit("KismetSystemLibrary was nullptr");
 
 	myMath = reinterpret_cast<CG::UKismetMathLibrary*>(CG::UKismetMathLibrary::StaticClass());
-	if (!myMath)		Utils::ThrowErrorExit("KismetMathLibrary was nullptr!");
+	if (!myMath) Utils::ThrowErrorExit("KismetMathLibrary was nullptr!");
 
 	myStatics = reinterpret_cast<CG::UGameplayStatics*>(CG::UGameplayStatics::StaticClass());
 	if (!myStatics)	Utils::ThrowErrorExit("GameplayStatics was nullptr");
